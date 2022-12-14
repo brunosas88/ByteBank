@@ -14,3 +14,4 @@ e utilização de laços de repetição e condição para confirmação de escol
 ## Atualizações
     1 - Mudança de estrutura de dados de array para uma lista do tipo Cliente, classe criada com os atributos básicos necessários para 
     interação em um banco como nome, número da conta e saldo; 
+    2 - Criada operação de mostrar o balanço total armazenado no banco;
