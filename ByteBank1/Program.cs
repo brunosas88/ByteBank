@@ -1,9 +1,48 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Security.Cryptography;
 using System.Xml.Schema;
 
 namespace ByteBank1
 {
+    public class Client
+    {
+        private string Name;
+        private string Cpf;
+        private string Password;
+        private decimal Balance;
+        private string AccountNumber;
+        
+
+        public Client(string name, string cpf, string password)
+        {
+            Name = name;
+            Cpf = cpf;
+            Password = password;
+			Balance = 0;
+			int randomNumber = RandomNumberGenerator.GetInt32(99999999);
+			AccountNumber = String.Format("{0, 0:D8}", randomNumber);
+		}
+
+        public void SetBalance (decimal addition)
+        { Balance += addition; }
+
+        public decimal GetBalance()
+		{ return Balance; }
+
+		public string GetName()
+        { return Name; }
+
+        public string GetCpf()
+        { return Cpf; }
+
+        public string GetPassword()
+        { return Password; }
+
+        public string GetAccount()
+        { return AccountNumber; }
+
+    }
     public class Program
     {
         static void GetWarning(string message)
@@ -15,6 +54,19 @@ namespace ByteBank1
             Console.BackgroundColor = ConsoleColor.DarkBlue;
             Console.WriteLine();
         }
+
+        static void PrintClientInfo(List<Client>clients, int index)
+        {
+			Console.BackgroundColor = ConsoleColor.DarkGreen;
+			Console.WriteLine($"Cliente ID {index}".PadRight(30, ' '));
+			Console.WriteLine($"Nome: {clients[index].GetName()}".PadRight(30, ' '));
+			Console.WriteLine($"Conta: {clients[index].GetAccount()}".PadRight(30, ' '));
+			Console.WriteLine($"CPF: {clients[index].GetCpf()}".PadRight(30, ' '));
+			Console.WriteLine($"Saldo: {clients[index].GetBalance()}".PadRight(30, ' '));
+			Console.BackgroundColor = ConsoleColor.DarkBlue;
+			Console.WriteLine();
+		}
+
         static void GetWarningForWrongOption()
         {
             GetWarning("Se essa operação foi escolhida por engano, basta não inserir valor em um ou mais campos do formulário.");
@@ -79,52 +131,44 @@ namespace ByteBank1
         {
             Console.WriteLine("1 - Inserir novo usuário");
             Console.WriteLine("2 - Deletar um usuário");
-            Console.WriteLine("3 - Detalhes de um usuário");
-            Console.WriteLine("4 - Total de usuários armazenados no banco");
-            Console.WriteLine("5 - Sair do programa");
+			Console.WriteLine("3 - Listar todas as contas registradas");
+			Console.WriteLine("4 - Detalhes de um usuário");
+			Console.WriteLine("5 - Valor total armazenado no banco");
+			Console.WriteLine("6 - Realizar transações bancárias");
+			Console.WriteLine("0 - Sair do programa");
             Console.WriteLine();
         }
 
-        public static int CreateUser (string[] userName, string[] userAccountNumber, int indexToPopulate)
-        {
-
-            int indexAddition = 0;
-            string name;
+        public static void CreateUser (List<Client> clients)
+        {            
+            string name, cpf, password;
             BankInterface("Operação Criação de Novo Usuário");
             GetWarningForWrongOption();
 
             Console.Write("Insira nome do novo usuário: ");
             name = Console.ReadLine();
-            
-            if (!string.IsNullOrEmpty(name))
-            {
-                userName[indexToPopulate] = name;
-                int accountNumber = RandomNumberGenerator.GetInt32(99999999);
-                userAccountNumber[indexToPopulate] = String.Format("{0, 0:D8}", accountNumber);
-                indexAddition++;
-            }
+			Console.Write("Insira cpf do novo usuário: ");
+			cpf = Console.ReadLine();
+			Console.Write("Insira senha do novo usuário: ");
+			password = Console.ReadLine();
 
-            return indexAddition;            
+			if (!string.IsNullOrEmpty(name) && !string.IsNullOrEmpty(cpf) && !string.IsNullOrEmpty(password))            
+                clients.Add(new Client(name, cpf, password));           
+                     
         }
 
-        static void GetAllUsers(string[] userName, string[] userAccountNumber, int currentIndex)
+        static void GetAllUsers(List<Client> clients)
         {            
             BankInterface("Operação Mostrar Todos Usuário");
-            Console.WriteLine($"Total de Clientes: {currentIndex}\n");
+            Console.WriteLine($"Total de Clientes: {clients.Count()}\n");
 
-            for (int i = 0; i < currentIndex; i++)
-            {
-                Console.BackgroundColor= ConsoleColor.DarkGreen;
-                Console.WriteLine($"Cliente ID {i}".PadRight(30, ' '));
-                Console.WriteLine($"Nome: {userName[i]}".PadRight(30, ' '));
-                Console.WriteLine($"Conta: {userAccountNumber[i]}".PadRight(30, ' '));
-                Console.BackgroundColor = ConsoleColor.DarkBlue;
-                Console.WriteLine();
-            }
+            for (int i = 0; i < clients.Count(); i++)
+                PrintClientInfo(clients, i); 
+            
             BackToMenu();
         }
 
-        static int GetIndexUser(string[] userName, string[] userAccountNumber)
+        static int GetIndexUser(List<Client> clients)
         {
             int index;
             string userInformation;
@@ -135,70 +179,45 @@ namespace ByteBank1
             if (string.IsNullOrEmpty(userInformation))
                 index = -1;
             else if (int.TryParse(userInformation, out int saida))
-                index = Array.IndexOf(userAccountNumber, userInformation);
+                index = clients.FindIndex(client => client.GetAccount() == userInformation);
             else
-                index = Array.IndexOf(userName, userInformation);            
+				index = clients.FindIndex(client => client.GetName() == userInformation);
 
-            return index;
+			return index;
         }
 
-        static void ShowUserDetails(string[] userName, string[] userAccountNumber, int currentIndex)
+        static void ShowUserDetails(List<Client> clients)
         {           
             int index;
 
             BankInterface("Operação Mostrar Detalhe de Usuário");
             GetWarningForWrongOption();
 
-            index = GetIndexUser(userName, userAccountNumber);
+            index = GetIndexUser(clients);
+			Console.WriteLine();
 
-            if (index >= 0 && index < currentIndex)
-            {
-                Console.WriteLine();
-                Console.BackgroundColor = ConsoleColor.DarkGreen;
-                Console.WriteLine($"Cliente ID {index}".PadRight(30, ' '));
-                Console.WriteLine($"Nome: {userName[index]}".PadRight(30, ' '));
-                Console.WriteLine($"Conta: {userAccountNumber[index]}".PadRight(30, ' '));
-                Console.BackgroundColor = ConsoleColor.DarkBlue;
-                Console.WriteLine();
-            }
+			if (index >= 0 && index < clients.Count())
+                PrintClientInfo(clients, index);
             else
                 GetWarning("Cliente não encontrado");
             BackToMenu();
         }
 
-        static int DeleteUser(string[] userName, string[] userAccountNumber, int currentEmptyIndex)
+        static int DeleteUser(List<Client> clients)
         {
             BankInterface("Operação Deletar Usuário");
             GetWarningForWrongOption();
 
             int indexSubtraction = 0;
 
-            int indexToBeDeleted = GetIndexUser(userName, userAccountNumber);
+            int indexToBeDeleted = GetIndexUser(clients);
+			Console.WriteLine();
 
-            if (indexToBeDeleted >= 0 && indexToBeDeleted < currentEmptyIndex)
+			if (indexToBeDeleted >= 0 && indexToBeDeleted < clients.Count())
             {
-                Console.WriteLine();
-                Console.BackgroundColor = ConsoleColor.DarkGreen;
-                Console.WriteLine($"Cliente ID {indexToBeDeleted}");
-                Console.WriteLine($"Nome: {userName[indexToBeDeleted]}");
-                Console.WriteLine($"Conta: {userAccountNumber[indexToBeDeleted]}");
-                Console.BackgroundColor = ConsoleColor.DarkBlue;
-                Console.WriteLine();
+                PrintClientInfo(clients, indexToBeDeleted);
                 GetWarning("Cliente Deletado com Sucesso!");
-                for (int i = indexToBeDeleted; i < currentEmptyIndex; i++)
-                {
-                    if (i == userName.Length - 1)
-                    {
-                        userName[i] = string.Empty;
-                        userAccountNumber[i] = string.Empty;
-                    }
-                    else
-                    {
-                        userName[i] = userName[i + 1];
-                        userAccountNumber[i] = userAccountNumber[i + 1];
-                    }                       
-                }
-                indexSubtraction = 1;
+                clients.RemoveAt(indexToBeDeleted);
             }
             else
                 GetWarning("Cliente não encontrado");
@@ -210,61 +229,57 @@ namespace ByteBank1
         public static void Main(string[] args)
         {
             Console.BackgroundColor = ConsoleColor.DarkBlue;
-            Console.ForegroundColor = ConsoleColor.White;
-            int numberOfUsers = GetNumberOfUsers();
-            int currentIndex = 0;
+            Console.ForegroundColor = ConsoleColor.White; 
             int option;
-            string[] dbName = new string[numberOfUsers];
-            string[] dbAccountNumber = new string[numberOfUsers];
+            List<Client> clients = new List<Client>();
             string warningMessage = "";
-            bool warning = false;
+            bool warning = false, validEntry;
 
             do
             {
                 BankInterface("Menu Inicial");
                 ShowMenu();
-                //Console.WriteLine($"\n index atual:{currentIndex} \n");
+                
                 if (warning)
                 {
                     GetWarning(warningMessage);
                     warning = false;
                 }
-                    
+
                 Console.Write("Escolha operação a ser realizada indicando seu número: ");
-                
-                int.TryParse(Console.ReadLine(), out option);
+
+                validEntry = int.TryParse(Console.ReadLine(), out option);
 
                 switch (option)
                 {
-                    case 1:
-                        if (currentIndex < numberOfUsers)                                         
-                            currentIndex += CreateUser(dbName, dbAccountNumber, currentIndex);
-                        else
-                        {
-                            warningMessage = "Aviso: Opção invalida, número máximo de usuários já está cadastrado!";
-                            warning = true;
-                        }                            
+                    case 1:                                                                
+                        CreateUser(clients);                            
                         break;
                     case 2:
-                        currentIndex -= DeleteUser(dbName, dbAccountNumber, currentIndex);
+                        DeleteUser(clients);
                         break;
                     case 3:
-                        ShowUserDetails(dbName, dbAccountNumber, currentIndex);                   
+						GetAllUsers(clients);						                   
                         break;
                     case 4:
-                        GetAllUsers(dbName, dbAccountNumber, currentIndex);                      
-                        break;
-                    case 5:
-                        BankInterface("Muito Obrigado por utilizar nosso aplicativo!");                     
-                        break;
+						ShowUserDetails(clients);
+						break;
+                    case 0:                        
                     default:
-                        warningMessage = "Aviso: Opção inválida, favor inserir número de 1 a 5.";
+                        if (validEntry && option == 0)
+                        {
+                            BankInterface("Muito Obrigado por utilizar nosso aplicativo!");
+                            break;
+                        }
+                        else                        
+                            option = -1;                        
+
+                        warningMessage = "Aviso: Opção inválida, favor inserir número de 1 a 6.";
                         warning = true;
+
                         break;
                 }      
-            } while (option != 5);
-
+            } while (option != 0);
         }
     }
-
 }
