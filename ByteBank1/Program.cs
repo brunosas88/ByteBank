@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Reflection;
 using System.Security.Cryptography;
 using System.Xml.Schema;
 
@@ -18,10 +19,11 @@ namespace ByteBank1
         {
             Name = name;
             Cpf = cpf;
-            Password = password;
-			Balance = 0;
+            Password = password;			
 			int randomNumber = RandomNumberGenerator.GetInt32(99999999);
 			AccountNumber = String.Format("{0, 0:D8}", randomNumber);
+            randomNumber = RandomNumberGenerator.GetInt32(999);
+			Balance = randomNumber;
 		}
 
         public void SetBalance (decimal addition)
@@ -226,7 +228,21 @@ namespace ByteBank1
             return indexSubtraction;
         }
 
-        public static void Main(string[] args)
+		private static void ShowTotalBalance(List<Client> clients)
+		{
+			BankInterface("Operação Mostrar Valor Acumulado no Banco");
+
+            decimal totalBalance = clients.Select(value => value.GetBalance()).Sum();
+
+			Console.BackgroundColor = ConsoleColor.DarkGreen;
+            Console.WriteLine($"Valor Acumulado no Banco: R$ {totalBalance:F2}");
+            Console.BackgroundColor = ConsoleColor.DarkBlue;
+
+			BackToMenu();
+
+		}
+
+		public static void Main(string[] args)
         {
             Console.BackgroundColor = ConsoleColor.DarkBlue;
             Console.ForegroundColor = ConsoleColor.White; 
@@ -264,7 +280,10 @@ namespace ByteBank1
                     case 4:
 						ShowUserDetails(clients);
 						break;
-                    case 0:                        
+                    case 5:
+						ShowTotalBalance(clients);
+						break;
+					case 0:                        
                     default:
                         if (validEntry && option == 0)
                         {
@@ -281,5 +300,6 @@ namespace ByteBank1
                 }      
             } while (option != 0);
         }
-    }
+
+	}
 }
