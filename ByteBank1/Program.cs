@@ -26,8 +26,18 @@ namespace ByteBank1
 			Balance = randomNumber;
 		}
 
-        public void SetBalance (decimal addition)
-        { Balance += addition; }
+        public bool SetBalance (decimal addition)
+        {
+            decimal newBalance = Balance + addition;
+
+            if (newBalance >= 0)
+            {
+                Balance = newBalance;
+                return true;
+            }
+            else
+                return false;
+        }
 
         public decimal GetBalance()
 		{ return Balance; }
@@ -253,8 +263,8 @@ namespace ByteBank1
                         Deposit(indexLoggedClient, clients);                           
                         break;
                     case 2:
-                        
-                        break;
+                        Withdraw(indexLoggedClient, clients);
+						break;
                     case 3:
 												                   
                         break; 
@@ -271,6 +281,31 @@ namespace ByteBank1
             } while (option != 0); 
 		}
 
+		private static void Withdraw(int indexLoggedClient, List<Client> clients)
+		{
+			BankInterface("Saque");
+			GetWarningForWrongOption();
+			string details, withdraw;
+
+			Console.Write("Quantia a ser retirada: R$ ");
+			withdraw = Console.ReadLine();
+
+			if (decimal.TryParse(withdraw, out decimal value) && value > 0 && clients[indexLoggedClient].SetBalance(-value))
+			{
+				GetWarning("Quantia Retirada com Sucesso!\n");
+
+				Console.Write("Verificar detalhes da conta? S - sim / Qualquer outra tecla - não: ");
+				details = Console.ReadLine();
+				if (details == "S" || details == "s")
+					PrintClientInfo(clients, indexLoggedClient);
+
+			}
+			else
+				GetWarning("Operação Não Realizada!");
+
+			BackToMenu();
+		}
+
 		private static void Deposit(int indexLoggedClient, List<Client> clients)
 		{
 			BankInterface("Depósito");
@@ -280,10 +315,8 @@ namespace ByteBank1
 			Console.Write("Quantia a ser depositada: R$ ");
             deposit = Console.ReadLine();
 
-			if (decimal.TryParse(deposit, out decimal value) && value > 0)
-            {
-                clients[indexLoggedClient].SetBalance(value);
-
+			if (decimal.TryParse(deposit, out decimal value) && value > 0 && clients[indexLoggedClient].SetBalance(value))
+            {                
                 GetWarning("Quantia adicionada com Sucesso!\n");
                 
 				Console.Write("Verificar detalhes da conta? S - sim / Qualquer outra tecla - não: ");
