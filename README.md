@@ -15,7 +15,7 @@ e utilização de laços de repetição e condição para confirmação de escol
 
 ## Atualizações
     1 - Mudança de estrutura de dados de array para uma lista do tipo Cliente, classe criada com os atributos básicos necessários para 
-    interação em um banco como nome, número da conta e saldo; 
+    interação em um banco: nome, cpf, senha, número da conta e saldo; 
     2 - Criada operação de mostrar o balanço total armazenado no banco;
     3 - Criada operação de validar usuário cadastrado por cpf e senha e as operações para realização de transações bancárias de 
     depósito, saque e transferêcia;
