@@ -17,3 +17,4 @@ e utilização de laços de repetição e condição para confirmação de escol
     2 - Criada operação de mostrar o balanço total armazenado no banco;
     3 - Criada operação de validar usuário cadastrado por cpf e senha e as operações para realização de transações bancárias de 
     depósito, saque e transferêcia;
+    4 - Criada validação de cpf ao ser registrado novo usuário para evitar duplicidade desse campo;
