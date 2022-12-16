@@ -13,20 +13,20 @@ namespace ByteBank1
         private string Cpf;
         private string Password;
         private decimal Balance;
-        private string AccountNumber;       
+        private string AccountNumber;
 
         public Client(string name, string cpf, string password)
         {
             Name = name;
             Cpf = cpf;
-            Password = password;			
-			int randomNumber = RandomNumberGenerator.GetInt32(99999999);
-			AccountNumber = String.Format("{0, 0:D8}", randomNumber);
+            Password = password;
+            int randomNumber = RandomNumberGenerator.GetInt32(99999999);
+            AccountNumber = String.Format("{0, 0:D8}", randomNumber);
             randomNumber = RandomNumberGenerator.GetInt32(999);
-			Balance = randomNumber;
-		}
+            Balance = randomNumber;
+        }
 
-        public bool SetBalance (decimal addition)
+        public bool SetBalance(decimal addition)
         {
             decimal newBalance = Balance + addition;
 
@@ -40,9 +40,9 @@ namespace ByteBank1
         }
 
         public decimal GetBalance()
-		{ return Balance; }
+        { return Balance; }
 
-		public string GetName()
+        public string GetName()
         { return Name; }
 
         public string GetCpf()
@@ -59,8 +59,8 @@ namespace ByteBank1
     {
         static void GetWarning(string message)
         {
-			Console.WriteLine();
-			Console.ForegroundColor = ConsoleColor.Black;
+            Console.WriteLine();
+            Console.ForegroundColor = ConsoleColor.Black;
             Console.BackgroundColor = ConsoleColor.Yellow;
             Console.Write(message + "\n");
             Console.ForegroundColor = ConsoleColor.White;
@@ -68,18 +68,18 @@ namespace ByteBank1
             Console.WriteLine();
         }
 
-        static void PrintClientInfo(List<Client>clients, int index)
+        static void PrintClientInfo(List<Client> clients, int index)
         {
-			Console.WriteLine();
-			Console.BackgroundColor = ConsoleColor.DarkGreen;
-			Console.WriteLine($"Cliente ID: {index}".PadRight(30, ' '));
-			Console.WriteLine($"Nome: {clients[index].GetName()}".PadRight(30, ' '));
-			Console.WriteLine($"Conta: {clients[index].GetAccount()}".PadRight(30, ' '));
-			Console.WriteLine($"CPF: {clients[index].GetCpf()}".PadRight(30, ' '));
-			Console.WriteLine($"Saldo: R$ {clients[index].GetBalance():F2}".PadRight(30, ' '));
-			Console.BackgroundColor = ConsoleColor.DarkBlue;
-			Console.WriteLine();
-		}
+            Console.WriteLine();
+            Console.BackgroundColor = ConsoleColor.DarkGreen;
+            Console.WriteLine($"Cliente ID: {index}".PadRight(30, ' '));
+            Console.WriteLine($"Nome: {clients[index].GetName()}".PadRight(30, ' '));
+            Console.WriteLine($"Conta: {clients[index].GetAccount()}".PadRight(30, ' '));
+            Console.WriteLine($"CPF: {clients[index].GetCpf()}".PadRight(30, ' '));
+            Console.WriteLine($"Saldo: R$ {clients[index].GetBalance():F2}".PadRight(30, ' '));
+            Console.BackgroundColor = ConsoleColor.DarkBlue;
+            Console.WriteLine();
+        }
 
         static void GetWarningForWrongOption()
         {
@@ -96,29 +96,31 @@ namespace ByteBank1
 
         static string alignMessage(string message, int blankSpace)
         {
-            return String.Format($"{{0,-{blankSpace}}}", String.Format("{0," + ((blankSpace + message.Length) / 2).ToString() + "}", message)); ;
+            return String.Format($"{{0,-{blankSpace}}}", String.Format("{0," + ((blankSpace + message.Length) / 2).ToString() + "}", message));
         }
 
-        static void BankInterface (string message)
+        static void BankInterface(string message)
         {
             Console.Clear();
             int blankSpace = 82;
-			message = alignMessage(message, blankSpace);
+            int totalCharsHeader = 102;
+            message = alignMessage(message, blankSpace);
             string title = alignMessage("ByteBank", blankSpace);
             Console.BackgroundColor = ConsoleColor.DarkRed;
-            Console.WriteLine($"======================================================================================================"); // 100 "="
+
+            Console.WriteLine(new string('=', totalCharsHeader));
             Console.Write("=========|");
             Console.Write(title);
-            Console.Write("|=========\n");            
-            Console.WriteLine($"======================================================================================================");
-            
+            Console.Write("|=========\n");
+            Console.WriteLine(new string('=', totalCharsHeader));
+
             Console.BackgroundColor = ConsoleColor.DarkGray;
-            
-            Console.WriteLine($"------------------------------------------------------------------------------------------------------");
+
+            Console.WriteLine(new string('-', totalCharsHeader));
             Console.Write("---------|");
             Console.Write(message);
             Console.Write("|---------\n");
-            Console.WriteLine($"------------------------------------------------------------------------------------------------------");
+            Console.WriteLine(new string('-', totalCharsHeader));
             Console.BackgroundColor = ConsoleColor.DarkBlue;
             Console.WriteLine();
         }
@@ -127,77 +129,82 @@ namespace ByteBank1
         {
             Console.WriteLine("1 - Inserir novo cliente");
             Console.WriteLine("2 - Deletar um cliente");
-			Console.WriteLine("3 - Listar todos os clientes registrados");
-			Console.WriteLine("4 - Detalhes de um cliente");
-			Console.WriteLine("5 - Valor total armazenado no banco");
-			Console.WriteLine("6 - Realizar transações bancárias");
-			Console.WriteLine("0 - Sair do programa");
+            Console.WriteLine("3 - Listar todos os clientes registrados");
+            Console.WriteLine("4 - Detalhes de um cliente");
+            Console.WriteLine("5 - Valor total armazenado no banco");
+            Console.WriteLine("6 - Realizar transações bancárias");
+            Console.WriteLine("0 - Sair do programa");
             Console.WriteLine();
         }
 
-		static void ShowBankTransactionsMenu()
-		{
-			Console.WriteLine("1 - Depositar");
-			Console.WriteLine("2 - Sacar");
-			Console.WriteLine("3 - Transferir");
-			Console.WriteLine("0 - Voltar ao Menu Principal");
-			Console.WriteLine();
-		}
+        static void ShowBankTransactionsMenu()
+        {
+            Console.WriteLine("1 - Depositar");
+            Console.WriteLine("2 - Sacar");
+            Console.WriteLine("3 - Transferir");
+            Console.WriteLine("0 - Voltar ao Menu Principal");
+            Console.WriteLine();
+        }
 
-		public static void CreateUser (List<Client> clients)
-        {            
-            string name, cpf, password;
+        public static void CreateUser(List<Client> clients)
+        {
+            string name, cpf, password, warning = "Cliente já Cadastrado!";
+            bool isRegistered;
             BankInterface("Cadastro de Novo Cliente");
             GetWarningForWrongOption();
 
             Console.Write("Insira nome do novo cliente: ");
             name = Console.ReadLine();
-			Console.Write("Insira cpf do novo cliente: ");
-			cpf = Console.ReadLine();
-			Console.Write("Insira senha do novo cliente: ");
-			password = Console.ReadLine();
+            Console.Write("Insira cpf do novo cliente: ");
+            cpf = Console.ReadLine();
+            Console.Write("Insira senha do novo cliente: ");
+            password = Console.ReadLine();
 
-			if (!string.IsNullOrEmpty(name) && !string.IsNullOrEmpty(cpf) && !string.IsNullOrEmpty(password))
+            isRegistered = clients.Exists(client => client.GetCpf() == cpf);
+
+            if (!string.IsNullOrEmpty(name) && !isRegistered && !string.IsNullOrEmpty(password))
             {
-				clients.Add(new Client(name, cpf, password));
-				PrintClientInfo(clients, clients.Count - 1);
-                GetWarning("Cliente Cadastrado com Sucesso!");
-			}
+                clients.Add(new Client(name, cpf, password));
+                PrintClientInfo(clients, clients.Count - 1);
+                warning = "Cliente Cadastrado com Sucesso!";
+            }
             else
-				GetWarning("Cliente não Cadastrado!");
+                warning += " Operação Não Realizada!";
+
+            GetWarning(warning);
 
             BackToMenu();
-		}
+        }
 
         static void GetAllUsers(List<Client> clients)
-        {            
+        {
             BankInterface("Mostrar Todos os Clientes");
             Console.WriteLine($"Total de Clientes: {clients.Count}\n");
 
             for (int i = 0; i < clients.Count; i++)
-                PrintClientInfo(clients, i); 
-            
+                PrintClientInfo(clients, i);
+
             BackToMenu();
         }
 
         static int GetIndexUser(List<Client> clients)
-        {  
+        {
             Console.Write("Informe CPF do cliente requisitado: ");
-			string userInformation = Console.ReadLine();
+            string userInformation = Console.ReadLine();
 
-			int index = clients.FindIndex(client => client.GetCpf() == userInformation);       
-			
-			return index;
+            int index = clients.FindIndex(client => client.GetCpf() == userInformation);
+
+            return index;
         }
 
         static void ShowUserDetails(List<Client> clients)
-        {        
+        {
             BankInterface("Mostrar Detalhe de Usuário");
             GetWarningForWrongOption();
 
             int clientIndex = GetIndexUser(clients);
 
-			if (clientIndex >= 0 && clientIndex < clients.Count)
+            if (clientIndex >= 0 && clientIndex < clients.Count)
                 PrintClientInfo(clients, clientIndex);
             else
                 GetWarning("Cliente não encontrado");
@@ -208,12 +215,12 @@ namespace ByteBank1
         static void DeleteUser(List<Client> clients)
         {
             BankInterface("Deletar Usuário");
-            GetWarningForWrongOption();            
+            GetWarningForWrongOption();
 
             int indexToBeDeleted = GetIndexUser(clients);
 
-			if (indexToBeDeleted >= 0 && indexToBeDeleted < clients.Count)
-			{
+            if (indexToBeDeleted >= 0 && indexToBeDeleted < clients.Count)
+            {
                 PrintClientInfo(clients, indexToBeDeleted);
                 GetWarning("Cliente Deletado com Sucesso!");
                 clients.RemoveAt(indexToBeDeleted);
@@ -221,25 +228,25 @@ namespace ByteBank1
             else
                 GetWarning("Cliente não encontrado!");
 
-            BackToMenu();            
+            BackToMenu();
         }
 
-	    static void ShowTotalBalance(List<Client> clients)
-		{
-			BankInterface("Operação Mostrar Valor Acumulado no Banco");
+        static void ShowTotalBalance(List<Client> clients)
+        {
+            BankInterface("Operação Mostrar Valor Acumulado no Banco");
 
             decimal totalBalance = clients.Select(value => value.GetBalance()).Sum();
 
-			Console.BackgroundColor = ConsoleColor.DarkGreen;
+            Console.BackgroundColor = ConsoleColor.DarkGreen;
             Console.WriteLine($"Valor Acumulado no Banco: R$ {totalBalance:F2}");
             Console.BackgroundColor = ConsoleColor.DarkBlue;
 
-			BackToMenu();
-		}
+            BackToMenu();
+        }
 
-		private static void PerformBankTransactions(int indexLoggedClient, List<Client> clients)
-		{
-            int option;            
+        private static void PerformBankTransactions(int indexLoggedClient, List<Client> clients)
+        {
+            int option;
             string warningMessage = "";
             bool warning = false, validEntry;
 
@@ -247,7 +254,7 @@ namespace ByteBank1
             {
                 BankInterface("Transações Bancárias");
                 ShowBankTransactionsMenu();
-                
+
                 if (warning)
                 {
                     GetWarning(warningMessage);
@@ -261,142 +268,142 @@ namespace ByteBank1
                 switch (option)
                 {
                     case 1:
-                        Deposit(indexLoggedClient, clients);                           
+                        Deposit(indexLoggedClient, clients);
                         break;
                     case 2:
                         Withdraw(indexLoggedClient, clients);
-						break;
+                        break;
                     case 3:
-						Transfer(indexLoggedClient, clients);
-						break;						 
-					case 0:                        
+                        Transfer(indexLoggedClient, clients);
+                        break;
+                    case 0:
                     default:
-                        if (validEntry && option == 0)                                                  
-                            break;                        
-                        else                        
-                            option = -1;                       
+                        if (validEntry && option == 0)
+                            break;
+                        else
+                            option = -1;
                         warningMessage = "Aviso: Opção inválida, favor inserir número de 0 a 3.";
                         warning = true;
                         break;
-                }      
-            } while (option != 0); 
-		}
+                }
+            } while (option != 0);
+        }
 
         static void PerformBankOperation(int operationValue, List<Client> clients, string requestMessage, int indexLoggedClient, int indexClientToTransfer = -1)
         {
-			string getClientDetails, amount, errorMessage;
-			bool validOperation = false;
+            string getClientDetails, amount, errorMessage;
+            bool validOperation = false;
 
-			Console.Write(requestMessage);
-			amount = Console.ReadLine();
+            Console.Write(requestMessage);
+            amount = Console.ReadLine();
 
             decimal.TryParse(amount, out decimal value);
             errorMessage = "Valor informado indevido!";
 
-			if (value > 0 && operationValue == 1)            
-                validOperation = clients[indexLoggedClient].SetBalance(value);                
-			
+            if (value > 0 && operationValue == 1)
+                validOperation = clients[indexLoggedClient].SetBalance(value);
+
             else if (value > 0 && (operationValue == 2 || operationValue == 3))
             {
-				validOperation = clients[indexLoggedClient].SetBalance(-value);
-				errorMessage = "Saldo Insuficiente!";
+                validOperation = clients[indexLoggedClient].SetBalance(-value);
+                errorMessage = "Saldo Insuficiente!";
                 if (operationValue == 3 && validOperation)
-					clients[indexClientToTransfer].SetBalance(value);
-			}
+                    clients[indexClientToTransfer].SetBalance(value);
+            }
 
-			if (validOperation)
-			{
-				GetWarning("Quantia Retirada com Sucesso!\n");
+            if (validOperation)
+            {
+                GetWarning("Quantia Retirada com Sucesso!\n");
 
-				Console.Write("Verificar detalhes da conta? S - sim / Qualquer outra tecla - não: ");
-				getClientDetails = Console.ReadLine();
-				if (getClientDetails == "S" || getClientDetails == "s")
-					PrintClientInfo(clients, indexLoggedClient);
-			}
-			else
-				GetWarning($"Operação Não Realizada! {errorMessage}");
-		}
+                Console.Write("Verificar detalhes da conta? S - sim / Qualquer outra tecla - não: ");
+                getClientDetails = Console.ReadLine();
+                if (getClientDetails == "S" || getClientDetails == "s")
+                    PrintClientInfo(clients, indexLoggedClient);
+            }
+            else
+                GetWarning($"Operação Não Realizada! {errorMessage}");
+        }
 
-		static void Transfer(int indexLoggedClient, List<Client> clients)
-		{
-			string findClient = "n", requestMessage = "Valor a ser transferido: R$ ";
-            int indexClientToTransfer, transferOperationValue = 3;            
+        static void Transfer(int indexLoggedClient, List<Client> clients)
+        {
+            string findClient = "n", requestMessage = "Valor a ser transferido: R$ ";
+            int indexClientToTransfer, transferOperationValue = 3;
 
             do
             {
-				BankInterface("Transferência");
-				GetWarningForWrongOption();
-				indexClientToTransfer = GetIndexUser(clients);
+                BankInterface("Transferência");
+                GetWarningForWrongOption();
+                indexClientToTransfer = GetIndexUser(clients);
 
-				if (indexClientToTransfer == -1 || indexClientToTransfer == indexLoggedClient)
-				{
-					GetWarning("Cliente Não Encontrado!");
-					Console.Write("Tentar encontrar cliente novamente? S - sim / Qualquer outra tecla - não: ");
-					findClient = Console.ReadLine();
+                if (indexClientToTransfer == -1 || indexClientToTransfer == indexLoggedClient)
+                {
+                    GetWarning("Cliente Não Encontrado!");
+                    Console.Write("Tentar encontrar cliente novamente? S - sim / Qualquer outra tecla - não: ");
+                    findClient = Console.ReadLine();
                 }
-                else              
-					PerformBankOperation(transferOperationValue, clients, requestMessage, indexLoggedClient, indexClientToTransfer);
-				                                             
-			} while (findClient == "s" || findClient == "S");
+                else
+                    PerformBankOperation(transferOperationValue, clients, requestMessage, indexLoggedClient, indexClientToTransfer);
 
-			BackToMenu();
-		}
+            } while (findClient == "s" || findClient == "S");
 
-		private static void Withdraw(int indexLoggedClient, List<Client> clients)
-		{
-			BankInterface("Saque");
-			GetWarningForWrongOption();
-			int withdrawOperationValue = 2;
-			string requestMessage = "Valor a ser retirado: R$ ";
+            BackToMenu();
+        }
 
-			PerformBankOperation(withdrawOperationValue, clients, requestMessage, indexLoggedClient);
+        private static void Withdraw(int indexLoggedClient, List<Client> clients)
+        {
+            BankInterface("Saque");
+            GetWarningForWrongOption();
+            int withdrawOperationValue = 2;
+            string requestMessage = "Valor a ser retirado: R$ ";
 
-			BackToMenu();
-		}
+            PerformBankOperation(withdrawOperationValue, clients, requestMessage, indexLoggedClient);
 
-		private static void Deposit(int indexLoggedClient, List<Client> clients)
-		{
-			BankInterface("Depósito");
+            BackToMenu();
+        }
+
+        private static void Deposit(int indexLoggedClient, List<Client> clients)
+        {
+            BankInterface("Depósito");
             GetWarningForWrongOption();
             int depositOperationValue = 1;
             string requestMessage = "Valor a ser depositado: R$ ";
 
-			PerformBankOperation(depositOperationValue, clients, requestMessage, indexLoggedClient);
+            PerformBankOperation(depositOperationValue, clients, requestMessage, indexLoggedClient);
 
-			BackToMenu();
-		}
+            BackToMenu();
+        }
 
-		static bool ValidateCredentials(List<Client> clients)
-		{
-			BankInterface("Validação de Credenciais de Cliente");
-			GetWarningForWrongOption();
+        static bool ValidateCredentials(List<Client> clients)
+        {
+            BankInterface("Validação de Credenciais de Cliente");
+            GetWarningForWrongOption();
 
-			int clientIndex = GetIndexUser(clients);		           
+            int clientIndex = GetIndexUser(clients);
 
-			if (clientIndex >= 0 && clientIndex < clients.Count)
-			{
-				Console.Write("\nFavor inserir a senha: ");
+            if (clientIndex >= 0 && clientIndex < clients.Count)
+            {
+                Console.Write("\nFavor inserir a senha: ");
                 string password = Console.ReadLine();
 
-                if (clients[clientIndex].GetPassword() == password)                
+                if (clients[clientIndex].GetPassword() == password)
                     PerformBankTransactions(clientIndex, clients);
                 else
-					GetWarning("Senha inválida");
-			}
-			else
-				GetWarning("Cliente não encontrado");
+                    GetWarning("Senha inválida");
+            }
+            else
+                GetWarning("Cliente não encontrado");
 
-			BackToMenu();
+            BackToMenu();
 
-			return true;
-		}
+            return true;
+        }
 
-		public static void Main(string[] args)
+        public static void Main(string[] args)
         {
             Console.BackgroundColor = ConsoleColor.DarkBlue;
             Console.ForegroundColor = ConsoleColor.White;
-			List<Client> clients = new List<Client>();
-			int option;            
+            List<Client> clients = new List<Client>();
+            int option;
             string warningMessage = "";
             bool warning = false, validEntry;
 
@@ -404,7 +411,7 @@ namespace ByteBank1
             {
                 BankInterface("Menu Inicial");
                 ShowMenu();
-                
+
                 if (warning)
                 {
                     GetWarning(warningMessage);
@@ -417,8 +424,8 @@ namespace ByteBank1
 
                 switch (option)
                 {
-                    case 1:                                                                
-                        CreateUser(clients);                            
+                    case 1:
+                        CreateUser(clients);
                         break;
                     case 2:
                         DeleteUser(clients);
@@ -427,29 +434,29 @@ namespace ByteBank1
                         GetAllUsers(clients);
                         break;
                     case 4:
-						ShowUserDetails(clients);
-						break;
-                    case 5:
-						ShowTotalBalance(clients);
-						break;
-                    case 6:
-						ValidateCredentials(clients);
+                        ShowUserDetails(clients);
                         break;
-					case 0:                        
+                    case 5:
+                        ShowTotalBalance(clients);
+                        break;
+                    case 6:
+                        ValidateCredentials(clients);
+                        break;
+                    case 0:
                     default:
                         if (validEntry && option == 0)
                         {
                             BankInterface("Muito Obrigado por utilizar nosso aplicativo!");
                             break;
                         }
-                        else                        
-                            option = -1;                       
+                        else
+                            option = -1;
                         warningMessage = "Aviso: Opção inválida, favor inserir número de 0 a 6.";
                         warning = true;
                         break;
-                }      
+                }
             } while (option != 0);
         }
 
-	}
+    }
 }
