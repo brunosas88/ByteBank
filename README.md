@@ -2,10 +2,12 @@
 Projeto que simula o menu de operações de uma instituição bancária.
 
 ## Recursos Implementados
-    1 - Cadastrar usuário
-    2 - Deletar usuário
-    3 - Mostrar detalhes de um usuário
-    4 - Mostrar todos os usuários
+    1 - Cadastrar usuário;
+    2 - Deletar usuário;
+    3 - Mostrar todos os usuários;
+    4 - Mostrar detalhes de um usuário;
+    5 - Mostrar o valor total armazenado no sistema;
+    6 - Realizar transações bancárias (depósito, saque, transferência);
 
 ## Tecnologias Utilizadas
 Aplicação de recursos básicos de C# como arrays para representação das características dos usuários cadastrados,
