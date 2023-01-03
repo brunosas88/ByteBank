@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace ByteBank1
@@ -14,8 +15,13 @@ namespace ByteBank1
 		private string password;
 		private decimal balance;
 		private string accountNumber;
-
-		public Client () { }
+		
+		[JsonConstructor]
+		public Client(string name, string cpf, string password, decimal balance, string accountNumber) : this(name, cpf, password)
+		{
+			this.balance = balance;
+			this.accountNumber = accountNumber;
+		}
 
 		public Client(string name, string cpf, string password)
 		{
