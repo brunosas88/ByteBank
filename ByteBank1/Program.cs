@@ -67,8 +67,6 @@ namespace ByteBank1
             } while (option != "0");
         }
 
-
-
 		public static void CreateUser(List<Client> clients)
 		{
 			string name, cpf, password, warning;
@@ -101,42 +99,6 @@ namespace ByteBank1
 			Display.BackToMenu();
 		}
 
-		static void GetAllUsers(List<Client> clients)
-		{
-			Display.ShowBankInterface("Mostrar Todos os Clientes");
-			Console.WriteLine($"Total de Clientes: {clients.Count}\n");
-
-			for (int i = 0; i < clients.Count; i++)
-				Display.PrintClientInfo(clients, i);
-
-			Display.BackToMenu();
-		}
-
-		static int GetIndexUser(List<Client> clients)
-		{
-			Console.Write("Informe CPF do cliente requisitado: ");
-			string userInformation = Console.ReadLine();
-
-			int index = clients.FindIndex(client => client.Cpf == userInformation);
-
-			return index;
-		}
-
-		static void GetUserDetails(List<Client> clients)
-		{
-			Display.ShowBankInterface("Mostrar Detalhe de Usuário");
-			Display.ShowWarningForWrongOption();
-
-			int clientIndex = GetIndexUser(clients);
-
-			if (clientIndex >= 0 && clientIndex < clients.Count)
-				Display.PrintClientInfo(clients, clientIndex);
-			else
-				Display.ShowWarning("Cliente não encontrado");
-
-			Display.BackToMenu();
-		}
-
 		static void DeleteUser(List<Client> clients)
 		{
 			Display.ShowBankInterface("Deletar Usuário");
@@ -156,6 +118,42 @@ namespace ByteBank1
 			Display.BackToMenu();
 		}
 
+		static int GetIndexUser(List<Client> clients)
+		{
+			Console.Write("Informe CPF do cliente requisitado: ");
+			string userInformation = Console.ReadLine();
+
+			int index = clients.FindIndex(client => client.Cpf == userInformation);
+
+			return index;
+		}
+
+		static void GetAllUsers(List<Client> clients)
+		{
+			Display.ShowBankInterface("Mostrar Todos os Clientes");
+			Console.WriteLine($"Total de Clientes: {clients.Count}\n");
+
+			for (int i = 0; i < clients.Count; i++)
+				Display.PrintClientInfo(clients, i);
+
+			Display.BackToMenu();
+		}
+
+		static void GetUserDetails(List<Client> clients)
+		{
+			Display.ShowBankInterface("Mostrar Detalhe de Usuário");
+			Display.ShowWarningForWrongOption();
+
+			int clientIndex = GetIndexUser(clients);
+
+			if (clientIndex >= 0 && clientIndex < clients.Count)
+				Display.PrintClientInfo(clients, clientIndex);
+			else
+				Display.ShowWarning("Cliente não encontrado");
+
+			Display.BackToMenu();
+		}
+
 		static void GetTotalBalance(List<Client> clients)
 		{
 			Display.ShowBankInterface("Operação Mostrar Valor Acumulado no Banco");
@@ -165,6 +163,29 @@ namespace ByteBank1
 			Console.BackgroundColor = ConsoleColor.DarkGreen;
 			Console.WriteLine($"Valor Acumulado no Banco: R$ {totalBalance:F2}");
 			Console.BackgroundColor = ConsoleColor.DarkBlue;
+
+			Display.BackToMenu();
+		}
+
+		static void ValidateCredentials(List<Client> clients)
+		{
+			Display.ShowBankInterface("Validação de Credenciais de Cliente");
+			Display.ShowWarningForWrongOption();
+
+			int clientIndex = GetIndexUser(clients);
+
+			if (clientIndex >= 0 && clientIndex < clients.Count)
+			{
+				Console.Write("\nFavor inserir a senha: ");
+				string password = Console.ReadLine();
+
+				if (clients[clientIndex].Password == password)
+					PerformBankTransactions(clientIndex, clients);
+				else
+					Display.ShowWarning("Senha inválida");
+			}
+			else
+				Display.ShowWarning("Cliente não encontrado");
 
 			Display.BackToMenu();
 		}
@@ -208,7 +229,56 @@ namespace ByteBank1
 			} while (option != "0");
 		}
 
-		static void PerformBankOperation(int operationValue, List<Client> clients, string requestMessage, int indexLoggedClient, int indexClientToTransfer = -1)
+		static void Transfer(int indexLoggedClient, List<Client> clients)
+		{
+			string findClient = "n", requestMessage = "Valor a ser transferido: R$ ";
+			int indexClientToTransfer, transferOperationValue = 3;
+
+			do
+			{
+				Display.ShowBankInterface("Transferência");
+				Display.ShowWarningForWrongOption();
+				indexClientToTransfer = GetIndexUser(clients);
+
+				if (indexClientToTransfer == -1 || indexClientToTransfer == indexLoggedClient)
+				{
+					Display.ShowWarning("Cliente Não Encontrado!");
+					Console.Write("Tentar encontrar cliente novamente? S - sim / Qualquer outra tecla - não: ");
+					findClient = Console.ReadLine();
+				}
+				else
+					ProcessBankOperation(transferOperationValue, clients, requestMessage, indexLoggedClient, indexClientToTransfer);
+
+			} while (findClient == "s" || findClient == "S");
+
+			Display.BackToMenu();
+		}
+
+		private static void Withdraw(int indexLoggedClient, List<Client> clients)
+		{
+			Display.ShowBankInterface("Saque");
+			Display.ShowWarningForWrongOption();
+			int withdrawOperationValue = 2;
+			string requestMessage = "Valor a ser retirado: R$ ";
+
+			ProcessBankOperation(withdrawOperationValue, clients, requestMessage, indexLoggedClient);
+
+			Display.BackToMenu();
+		}
+
+		private static void Deposit(int indexLoggedClient, List<Client> clients)
+		{
+			Display.ShowBankInterface("Depósito");
+			Display.ShowWarningForWrongOption();
+			int depositOperationValue = 1;
+			string requestMessage = "Valor a ser depositado: R$ ";
+
+			ProcessBankOperation(depositOperationValue, clients, requestMessage, indexLoggedClient);
+
+			Display.BackToMenu();
+		}
+
+		static void ProcessBankOperation(int operationValue, List<Client> clients, string requestMessage, int indexLoggedClient, int indexClientToTransfer = -1)
 		{
 			string getClientDetails, amount, errorMessage;
 			bool validOperation = false;
@@ -232,7 +302,7 @@ namespace ByteBank1
 
 			if (validOperation)
 			{
-				Display.ShowWarning("Quantia Retirada com Sucesso!\n");
+				Display.ShowWarning("Operação Realizada com Sucesso!\n");
 
 				Console.Write("Verificar detalhes da conta? S - sim / Qualquer outra tecla - não: ");
 				getClientDetails = Console.ReadLine();
@@ -243,76 +313,6 @@ namespace ByteBank1
 				Display.ShowWarning($"Operação Não Realizada! {errorMessage}");
 		}
 
-		static void Transfer(int indexLoggedClient, List<Client> clients)
-		{
-			string findClient = "n", requestMessage = "Valor a ser transferido: R$ ";
-			int indexClientToTransfer, transferOperationValue = 3;
-
-			do
-			{
-				Display.ShowBankInterface("Transferência");
-				Display.ShowWarningForWrongOption();
-				indexClientToTransfer = GetIndexUser(clients);
-
-				if (indexClientToTransfer == -1 || indexClientToTransfer == indexLoggedClient)
-				{
-					Display.ShowWarning("Cliente Não Encontrado!");
-					Console.Write("Tentar encontrar cliente novamente? S - sim / Qualquer outra tecla - não: ");
-					findClient = Console.ReadLine();
-				}
-				else
-					PerformBankOperation(transferOperationValue, clients, requestMessage, indexLoggedClient, indexClientToTransfer);
-
-			} while (findClient == "s" || findClient == "S");
-
-			Display.BackToMenu();
-		}
-
-		private static void Withdraw(int indexLoggedClient, List<Client> clients)
-		{
-			Display.ShowBankInterface("Saque");
-			Display.ShowWarningForWrongOption();
-			int withdrawOperationValue = 2;
-			string requestMessage = "Valor a ser retirado: R$ ";
-
-			PerformBankOperation(withdrawOperationValue, clients, requestMessage, indexLoggedClient);
-
-			Display.BackToMenu();
-		}
-
-		private static void Deposit(int indexLoggedClient, List<Client> clients)
-		{
-			Display.ShowBankInterface("Depósito");
-			Display.ShowWarningForWrongOption();
-			int depositOperationValue = 1;
-			string requestMessage = "Valor a ser depositado: R$ ";
-
-			PerformBankOperation(depositOperationValue, clients, requestMessage, indexLoggedClient);
-
-			Display.BackToMenu();
-		}
-
-		static void ValidateCredentials(List<Client> clients)
-		{
-			Display.ShowBankInterface("Validação de Credenciais de Cliente");
-			Display.ShowWarningForWrongOption();
-
-			int clientIndex = GetIndexUser(clients);
-
-			if (clientIndex >= 0 && clientIndex < clients.Count)
-			{
-				Console.Write("\nFavor inserir a senha: ");
-				string password = Console.ReadLine();
-
-				if (clients[clientIndex].Password == password)
-					PerformBankTransactions(clientIndex, clients);
-				else
-					Display.ShowWarning("Senha inválida");
-			}
-			else
-				Display.ShowWarning("Cliente não encontrado");
-
-			Display.BackToMenu();
-		}
+		
 	}
 }
