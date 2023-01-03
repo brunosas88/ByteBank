@@ -9,7 +9,7 @@ namespace ByteBank1
 	public class Display
 	{
 
-		public static string alignMessage(string message, int blankSpace)
+		public static string alignMessage(string message, int blankSpace = 82)
 		{
 			return String.Format($"{{0,-{blankSpace}}}", String.Format("{0," + ((blankSpace + message.Length) / 2).ToString() + "}", message));
 		}
