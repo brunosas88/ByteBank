@@ -20,4 +20,5 @@ e utilização de laços de repetição e condição para confirmação de escol
     3 - Criada operação de validar usuário cadastrado por cpf e senha e as operações para realização de transações bancárias de 
     depósito, saque e transferêcia;
     4 - Criada validação de cpf ao ser registrado novo usuário para evitar duplicidade desse campo;
-    5 - Criadas classes Display e Client para divisão de responsabilidades;
+    5 - Criadas classes Display e Client para melhor estruturação do projeto e divisão de responsabilidades;
+    6 - Adicionada persistência de dados;
