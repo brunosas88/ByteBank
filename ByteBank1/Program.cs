@@ -17,6 +17,7 @@ namespace ByteBank1
             List<Client> clients = new List<Client>();
             string option;
             string warningMessage = "";
+			Utils.ReadJSON(ref clients);
 
             do
             {
@@ -57,6 +58,7 @@ namespace ByteBank1
 						break;
                     case "0":
 						Display.ShowBankInterface("Muito Obrigado por utilizar nosso aplicativo!");
+						Utils.WriteJSON(clients);
 						break;
                     default: 
                         warningMessage = "Aviso: Opção inválida, favor inserir número de 0 a 6.";                        
@@ -69,7 +71,7 @@ namespace ByteBank1
 
 		public static void CreateUser(List<Client> clients)
 		{
-			string name, cpf, password, warning = "Cliente já Cadastrado!";
+			string name, cpf, password, warning;
 			bool isRegistered;
 			Display.ShowBankInterface("Cadastro de Novo Cliente");
 			Display.ShowWarningForWrongOption();
@@ -81,7 +83,7 @@ namespace ByteBank1
 			Console.Write("Insira senha do novo cliente: ");
 			password = Console.ReadLine();
 
-			isRegistered = clients.Exists(client => client.GetCpf() == cpf);
+			isRegistered = clients.Exists(client => client.Cpf == cpf);
 
 			if (!string.IsNullOrEmpty(name) && !isRegistered && !string.IsNullOrEmpty(password))
 			{
@@ -92,7 +94,7 @@ namespace ByteBank1
 			else if (string.IsNullOrEmpty(name) || string.IsNullOrEmpty(password))
 				warning = "Entrada Inválida! Operação Não Realizada!";
 			else
-				warning += " Operação Não Realizada!";
+				warning = "Cliente já Cadastrado! Operação Não Realizada!";
 
 			Display.ShowWarning(warning);
 
@@ -115,7 +117,7 @@ namespace ByteBank1
 			Console.Write("Informe CPF do cliente requisitado: ");
 			string userInformation = Console.ReadLine();
 
-			int index = clients.FindIndex(client => client.GetCpf() == userInformation);
+			int index = clients.FindIndex(client => client.Cpf == userInformation);
 
 			return index;
 		}
@@ -158,7 +160,7 @@ namespace ByteBank1
 		{
 			Display.ShowBankInterface("Operação Mostrar Valor Acumulado no Banco");
 
-			decimal totalBalance = clients.Select(value => value.GetBalance()).Sum();
+			decimal totalBalance = clients.Select(value => value.Balance).Sum();
 
 			Console.BackgroundColor = ConsoleColor.DarkGreen;
 			Console.WriteLine($"Valor Acumulado no Banco: R$ {totalBalance:F2}");
@@ -302,7 +304,7 @@ namespace ByteBank1
 				Console.Write("\nFavor inserir a senha: ");
 				string password = Console.ReadLine();
 
-				if (clients[clientIndex].GetPassword() == password)
+				if (clients[clientIndex].Password == password)
 					PerformBankTransactions(clientIndex, clients);
 				else
 					Display.ShowWarning("Senha inválida");

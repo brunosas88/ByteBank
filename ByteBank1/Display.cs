@@ -87,10 +87,10 @@ namespace ByteBank1
 			Console.WriteLine();
 			Console.BackgroundColor = ConsoleColor.DarkGreen;
 			Console.WriteLine($"Cliente ID: {index}".PadRight(30, ' '));
-			Console.WriteLine($"Nome: {clients[index].GetName()}".PadRight(30, ' '));
-			Console.WriteLine($"Conta: {clients[index].GetAccount()}".PadRight(30, ' '));
-			Console.WriteLine($"CPF: {clients[index].GetCpf()}".PadRight(30, ' '));
-			Console.WriteLine($"Saldo: R$ {clients[index].GetBalance():F2}".PadRight(30, ' '));
+			Console.WriteLine($"Nome: {clients[index].Name}".PadRight(30, ' '));
+			Console.WriteLine($"Conta: {clients[index].AccountNumber}".PadRight(30, ' '));
+			Console.WriteLine($"CPF: {clients[index].Cpf}".PadRight(30, ' '));
+			Console.WriteLine($"Saldo: R$ {clients[index].Balance:F2}".PadRight(30, ' '));
 			Console.BackgroundColor = ConsoleColor.DarkBlue;
 			Console.WriteLine();
 		}
