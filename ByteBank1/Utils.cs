@@ -24,7 +24,7 @@ namespace ByteBank1
 
 		public static void ReadJSON(ref List<Client> clients)
 		{
-			string filePath = @"C:\Users\Public\Documents\players.json";
+			string filePath = @"C:\Users\Public\Documents\clients.json";
 
 			if (File.Exists(filePath))
 			{
