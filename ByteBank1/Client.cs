@@ -9,50 +9,46 @@ namespace ByteBank1
 {
 	public class Client
 	{
-		private string Name;
-		private string Cpf;
-		private string Password;
-		private decimal Balance;
-		private string AccountNumber;
+		private string name;
+		private string cpf;
+		private string password;
+		private decimal balance;
+		private string accountNumber;
+
+		public Client () { }
 
 		public Client(string name, string cpf, string password)
 		{
-			Name = name;
-			Cpf = cpf;
-			Password = password;
+			this.name = name;
+			this.cpf = cpf;
+			this.password = password;
 			int randomNumber = RandomNumberGenerator.GetInt32(99999999);
-			AccountNumber = String.Format("{0, 0:D8}", randomNumber);
-			randomNumber = RandomNumberGenerator.GetInt32(999);
-			Balance = randomNumber;
+			accountNumber = String.Format("{0, 0:D8}", randomNumber);			
+			balance = 0;
 		}
 
 		public bool SetBalance(decimal addition)
 		{
-			decimal newBalance = Balance + addition;
+			decimal newBalance = balance + addition;
 
 			if (newBalance >= 0)
 			{
-				Balance = newBalance;
+				balance = newBalance;
 				return true;
 			}
 			else
 				return false;
 		}
 
-		public decimal GetBalance()
-		{ return Balance; }
+		public string Name { get => name; }
 
-		public string GetName()
-		{ return Name; }
+		public string Cpf { get => cpf; }
 
-		public string GetCpf()
-		{ return Cpf; }
+		public string Password { get => password; }
 
-		public string GetPassword()
-		{ return Password; }
+		public decimal Balance { get => balance; }
 
-		public string GetAccount()
-		{ return AccountNumber; }
+		public string AccountNumber { get => accountNumber; }
 
 	}
 }
