@@ -229,10 +229,14 @@ namespace ByteBank1
 						Transfer(indexLoggedClient, clients, bankTransactions);
 						warningMessage = "";
 						break;
+					case "4":
+						GetClientBankTransactions(clients[indexLoggedClient], bankTransactions);
+						warningMessage = "";
+						break;
 					case "0":
 						break;
 					default:
-						warningMessage = "Aviso: Opção inválida, favor inserir número de 0 a 3.";						
+						warningMessage = "Aviso: Opção inválida, favor inserir número de 0 a 4.";						
 						break;
 				}
 			} while (option != "0");
@@ -334,13 +338,35 @@ namespace ByteBank1
 			Utils.WriteBankTransactionRecordFile(newRecord);
 		}
 
-		private static void GetAllBankTransactions(List<BankTransactionRecord> bankTransactions)
+		static void GetAllBankTransactions(List<BankTransactionRecord> bankTransactions)
 		{
 			Display.ShowBankInterface("Transações Bancárias");
 			Console.WriteLine($"Total de Transações Bancárias Realizadas: {bankTransactions.Count}\n");
 
 			for (int i = 0; i < bankTransactions.Count; i++)
 				Display.PrintBankTransactionsInfo(bankTransactions[i]);
+
+			Display.BackToMenu();
+		}
+
+		static void GetClientBankTransactions(Client client, List<BankTransactionRecord> bankTransactions)
+		{
+			Display.ShowBankInterface("Transações Bancárias");
+
+			List<BankTransactionRecord> clientBankTransactions = bankTransactions.FindAll(bankTransaction => bankTransaction.OriginClient.Cpf == client.Cpf);
+			clientBankTransactions.AddRange(bankTransactions.FindAll(bankTransaction => {
+				if (bankTransaction.DestinationClient != null)
+					return bankTransaction.DestinationClient.Cpf == client.Cpf;
+				else
+					return false;
+				}));
+
+			clientBankTransactions = clientBankTransactions.OrderBy(bankTransaction => bankTransaction.Date).ToList();
+
+			Console.WriteLine($"Total de Transações Bancárias: {clientBankTransactions.Count}\n");
+
+			for (int i = 0; i < clientBankTransactions.Count; i++)
+				Display.PrintBankTransactionsInfo(clientBankTransactions[i]);
 
 			Display.BackToMenu();
 		}

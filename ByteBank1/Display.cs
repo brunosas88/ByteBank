@@ -58,8 +58,8 @@ namespace ByteBank1
 			Console.WriteLine("1 - Depositar");
 			Console.WriteLine("2 - Sacar");
 			Console.WriteLine("3 - Transferir");
-			Console.WriteLine("0 - Voltar ao Menu Principal");
-			Console.WriteLine();
+			Console.WriteLine("4 - Histórico de Transações Bancárias");
+			Console.WriteLine("0 - Voltar ao Menu Principal");			
 		}
 
 		public static void ShowWarning(string message)
