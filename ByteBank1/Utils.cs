@@ -11,17 +11,22 @@ using System.Threading.Tasks;
 namespace ByteBank1
 {
 	public class Utils
-	{
+	{		
 		public static void WriteJSON(List<Client> clients, List<BankTransactionRecord> bankTransactions)
 		{
-			string filePath = @"C:\Users\Public\Documents\clients.json";
+			
+
+			if (!Directory.Exists(Constants.AppDirectoryPath))
+				Directory.CreateDirectory(Constants.AppDirectoryPath);
+
+			string filePath = @$"{Constants.AppDirectoryPath}\clients.json";
 
 			string jsonStringClients = JsonSerializer.Serialize(clients, new JsonSerializerOptions() { WriteIndented = true });
 
 			using (StreamWriter outputFile = new StreamWriter(filePath))
 				outputFile.WriteLine(jsonStringClients);
 
-			filePath = @"C:\Users\Public\Documents\bankTransactions.json";
+			filePath = @$"{Constants.AppDirectoryPath}\bankTransactions.json";
 
 			string jsonStringBankTransactions = JsonSerializer.Serialize(bankTransactions, new JsonSerializerOptions() { WriteIndented = true });
 
@@ -32,7 +37,7 @@ namespace ByteBank1
 
 		public static void ReadJSON(ref List<Client> clients, ref List<BankTransactionRecord> bankTransactions)
 		{
-			string filePath = @"C:\Users\Public\Documents\clients.json";
+			string filePath = @$"{Constants.AppDirectoryPath}\clients.json";
 
 			if (File.Exists(filePath))
 			{
@@ -43,7 +48,7 @@ namespace ByteBank1
 				}
 			}
 
-			filePath = @"C:\Users\Public\Documents\bankTransactions.json";
+			filePath = @$"{Constants.AppDirectoryPath}\bankTransactions.json";
 
 			if (File.Exists(filePath))
 			{
@@ -55,11 +60,13 @@ namespace ByteBank1
 			}
 		}
 
-		public static void WriteBankTransactionRecordFile (BankTransactionRecord record)
+		public static void WriteBankTransactionRecordFile(BankTransactionRecord record)
 		{
-			string directoryPath = @"C:\Users\Public\Documents\BankTransactionRecords";
+			
+			string directoryPath = @$"{Constants.AppDirectoryPath}\Records\{ChangeDateComposition(record.Date)}";
 
-			Directory.CreateDirectory(directoryPath);
+			if (!Directory.Exists(directoryPath))
+				Directory.CreateDirectory(directoryPath);
 
 			string filePath = @$"{directoryPath}\{record.Id}.txt";
 
@@ -74,7 +81,7 @@ namespace ByteBank1
 			file.WriteLine(Display.alignMessage($"VALOR: R$ {record.Value:F2}"));
 			file.WriteLine(Display.alignMessage(new string('-', 82)));
 
-			if (record.OperationType == BankOperation.Deposit.ToString() || record.OperationType == BankOperation.Withdraw.ToString())
+			if (record.OperationType == BankOperation.Deposito.ToString() || record.OperationType == BankOperation.Saque.ToString())
 			{				
 				file.WriteLine(Display.alignMessage($"CONTA: {record.OriginClient.AccountNumber}"));
 				file.WriteLine(Display.alignMessage($"NOME: {record.OriginClient.Name}"));
@@ -94,6 +101,11 @@ namespace ByteBank1
 			}
 			file.WriteLine(Display.alignMessage(new string('=', 82)));
 			file.Close();
+		}
+
+		public static string ChangeDateComposition (DateTime date)
+		{
+			return date.ToShortDateString().Replace('/', '-');
 		}
 	}
 }

@@ -57,12 +57,20 @@ namespace ByteBank1
                         ValidateCredentials(clients, bankTransactions);
 						warningMessage = "";
 						break;
-                    case "0":
+					case "7":
+						GetAllBankTransactions(bankTransactions);
+						warningMessage = "";
+						break;
+					case "8":
+						
+						warningMessage = "";
+						break;
+					case "0":
 						Display.ShowBankInterface("Muito Obrigado por utilizar nosso aplicativo!");
 						Utils.WriteJSON(clients, bankTransactions);
 						break;
                     default: 
-                        warningMessage = "Aviso: Opção inválida, favor inserir número de 0 a 6.";                        
+                        warningMessage = "Aviso: Opção inválida, favor inserir número de 0 a 8.";                        
                         break;
                 }
             } while (option != "0");
@@ -87,7 +95,7 @@ namespace ByteBank1
 			if (!string.IsNullOrEmpty(name) && !isRegistered && !string.IsNullOrEmpty(password))
 			{
 				clients.Add(new Client(name, cpf, password));
-				Display.PrintClientInfo(clients, clients.Count - 1);
+				Display.PrintClientInfo(clients[clients.Count - 1], clients.Count - 1);
 				warning = "Cliente Cadastrado com Sucesso!";
 			}
 			else if (string.IsNullOrEmpty(name) || string.IsNullOrEmpty(password))
@@ -109,7 +117,7 @@ namespace ByteBank1
 
 			if (indexToBeDeleted >= 0 && indexToBeDeleted < clients.Count)
 			{
-				Display.PrintClientInfo(clients, indexToBeDeleted);
+				Display.PrintClientInfo(clients[indexToBeDeleted], indexToBeDeleted);
 				Display.ShowWarning("Cliente Deletado com Sucesso!");
 				clients.RemoveAt(indexToBeDeleted);
 			}
@@ -134,8 +142,8 @@ namespace ByteBank1
 			Display.ShowBankInterface("Mostrar Todos os Clientes");
 			Console.WriteLine($"Total de Clientes: {clients.Count}\n");
 
-			for (int i = 0; i < clients.Count; i++)
-				Display.PrintClientInfo(clients, i);
+			for (int clientIndex = 0; clientIndex < clients.Count; clientIndex++)
+				Display.PrintClientInfo(clients[clientIndex], clientIndex);
 
 			Display.BackToMenu();
 		}
@@ -148,7 +156,7 @@ namespace ByteBank1
 			int clientIndex = GetIndexUser(clients);
 
 			if (clientIndex >= 0 && clientIndex < clients.Count)
-				Display.PrintClientInfo(clients, clientIndex);
+				Display.PrintClientInfo(clients[clientIndex], clientIndex);
 			else
 				Display.ShowWarning("Cliente não encontrado");
 
@@ -248,7 +256,7 @@ namespace ByteBank1
 					findClient = Console.ReadLine();
 				}
 				else
-					ProcessBankOperation((int) BankOperation.Transfer, bankTransactions, clients, requestMessage, indexLoggedClient, indexClientToTransfer);
+					ProcessBankOperation((int) BankOperation.Transferencia, bankTransactions, clients, requestMessage, indexLoggedClient, indexClientToTransfer);
 
 			} while (findClient == "s" || findClient == "S");
 
@@ -261,7 +269,7 @@ namespace ByteBank1
 			Display.ShowWarningForWrongOption();
 			string requestMessage = "Valor a ser retirado: R$ ";
 
-			ProcessBankOperation((int) BankOperation.Withdraw, bankTransactions, clients, requestMessage, indexLoggedClient);
+			ProcessBankOperation((int) BankOperation.Saque, bankTransactions, clients, requestMessage, indexLoggedClient);
 
 			Display.BackToMenu();
 		}
@@ -272,7 +280,7 @@ namespace ByteBank1
 			Display.ShowWarningForWrongOption();
 			string requestMessage = "Valor a ser depositado: R$ ";
 
-			ProcessBankOperation((int) BankOperation.Deposit, bankTransactions, clients, requestMessage, indexLoggedClient);
+			ProcessBankOperation((int) BankOperation.Deposito, bankTransactions, clients, requestMessage, indexLoggedClient);
 
 			Display.BackToMenu();
 		}
@@ -288,15 +296,15 @@ namespace ByteBank1
 			decimal.TryParse(amount, out decimal value);
 			errorMessage = "Valor informado indevido!";
 
-			if (value > 0 && operationValue == (int)BankOperation.Deposit)
+			if (value > 0 && operationValue == (int)BankOperation.Deposito)
 				validOperation = clients[indexLoggedClient].SetBalance(value);
 
-			else if (value > 0 && (operationValue == (int)BankOperation.Withdraw || operationValue == (int)BankOperation.Transfer))
+			else if (value > 0 && (operationValue == (int)BankOperation.Saque || operationValue == (int)BankOperation.Transferencia))
 			{
 				validOperation = clients[indexLoggedClient].SetBalance(-value);
 				errorMessage = "Saldo Insuficiente!";
 
-				if (operationValue == (int)BankOperation.Transfer && validOperation)
+				if (operationValue == (int)BankOperation.Transferencia && validOperation)
 					clients[indexClientToTransfer].SetBalance(value);
 			}
 
@@ -313,7 +321,7 @@ namespace ByteBank1
 				getClientDetails = Console.ReadLine();
 
 				if (getClientDetails == "S" || getClientDetails == "s")
-					Display.PrintClientInfo(clients, indexLoggedClient);
+					Display.PrintClientInfo(clients[indexLoggedClient], indexLoggedClient);
 			}
 			else
 				Display.ShowWarning($"Operação Não Realizada! {errorMessage}");
@@ -325,5 +333,17 @@ namespace ByteBank1
 			bankTransactions.Add(newRecord);
 			Utils.WriteBankTransactionRecordFile(newRecord);
 		}
+
+		private static void GetAllBankTransactions(List<BankTransactionRecord> bankTransactions)
+		{
+			Display.ShowBankInterface("Transações Bancárias");
+			Console.WriteLine($"Total de Transações Bancárias Realizadas: {bankTransactions.Count}\n");
+
+			for (int i = 0; i < bankTransactions.Count; i++)
+				Display.PrintBankTransactionsInfo(bankTransactions[i]);
+
+			Display.BackToMenu();
+		}
+
 	}
 }

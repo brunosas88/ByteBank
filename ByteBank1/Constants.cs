@@ -6,10 +6,8 @@ using System.Threading.Tasks;
 
 namespace ByteBank1
 {
-	public enum BankOperation
+	public static class Constants
 	{
-		Deposito = 1,
-		Saque = 2,
-		Transferencia = 3
-	};
+		public const string AppDirectoryPath = @"C:\Users\Public\Documents\ByteBankData";
+	}
 }
