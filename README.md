@@ -22,5 +22,5 @@ e utilização de laços de repetição e condição para confirmação de escol
     4 - Criada validação de cpf ao ser registrado novo usuário para evitar duplicidade desse campo;
     5 - Criadas classes Display e Client para melhor estruturação do projeto e divisão de responsabilidades;
     6 - Adicionada persistência de dados sobre os clientes cadastrados;
-    7 - Adicionada persistência de dados e geração de arquivo de texto com detalhes sobre transações 
-    realizadas (depósitos, saques, transferências); 
+    7 - Adicionada persistência de dados e geração de arquivo de texto com detalhes sobre transações realizadas (depósitos, saques, 
+    transferências); 
