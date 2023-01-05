@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.VisualBasic;
+using System;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Security.Cryptography;
@@ -46,7 +47,7 @@ namespace ByteBank1
 						warningMessage = "";
 						break;
                     case "4":
-                        GetUserDetails(clients);
+                        GetClientDetails(clients);
 						warningMessage = "";
 						break;
                     case "5":
@@ -62,7 +63,7 @@ namespace ByteBank1
 						warningMessage = "";
 						break;
 					case "8":
-						
+						GetBankTransactionsDetails(clients, bankTransactions);
 						warningMessage = "";
 						break;
 					case "0":
@@ -110,7 +111,7 @@ namespace ByteBank1
 
 		static void DeleteUser(List<Client> clients)
 		{
-			Display.ShowBankInterface("Deletar Usuário");
+			Display.ShowBankInterface("Deletar Cliente");
 			Display.ShowWarningForWrongOption();
 
 			int indexToBeDeleted = GetIndexUser(clients);
@@ -148,9 +149,9 @@ namespace ByteBank1
 			Display.BackToMenu();
 		}
 
-		static void GetUserDetails(List<Client> clients)
+		static void GetClientDetails(List<Client> clients)
 		{
-			Display.ShowBankInterface("Mostrar Detalhe de Usuário");
+			Display.ShowBankInterface("Mostrar Detalhe de Cliente");
 			Display.ShowWarningForWrongOption();
 
 			int clientIndex = GetIndexUser(clients);
@@ -363,13 +364,138 @@ namespace ByteBank1
 
 			clientBankTransactions = clientBankTransactions.OrderBy(bankTransaction => bankTransaction.Date).ToList();
 
-			Console.WriteLine($"Total de Transações Bancárias: {clientBankTransactions.Count}\n");
+			if (clientBankTransactions.Count == 0)
+				Display.ShowWarning("Nenhum Registro Encontrado");
+			else
+			{
+				Console.WriteLine($"Total de Transações Bancárias: {clientBankTransactions.Count}\n");
 
-			for (int i = 0; i < clientBankTransactions.Count; i++)
-				Display.PrintBankTransactionsInfo(clientBankTransactions[i]);
+				for (int i = 0; i < clientBankTransactions.Count; i++)
+					Display.PrintBankTransactionsInfo(clientBankTransactions[i]);
+			}
 
 			Display.BackToMenu();
 		}
 
+		static void GetBankTransactionsByDate(List<BankTransactionRecord> bankTransactions, string dateToFind)
+		{
+			Display.ShowBankInterface("Transações Bancárias");
+
+			List<BankTransactionRecord> bankTransactionsByDate = bankTransactions.FindAll(bankTransaction => bankTransaction.Date.ToShortDateString() == dateToFind);
+
+			if (bankTransactionsByDate.Count == 0)
+				Display.ShowWarning("Nenhum Registro Encontrado");
+			else
+			{
+				Console.WriteLine($"Total de Transações Bancárias: {bankTransactionsByDate.Count}\n");
+
+				for (int i = 0; i < bankTransactionsByDate.Count; i++)
+					Display.PrintBankTransactionsInfo(bankTransactionsByDate[i]);
+			}
+
+			Display.BackToMenu();
+		}
+
+		private static void GetBankTransactionsDetails(List<Client> clients, List<BankTransactionRecord> bankTransactions)
+		{
+			string option;
+			string warningMessage = "";
+
+			do
+			{
+				Display.ShowBankInterface("Buscar Transações Bancárias");
+				Display.ShowBankTransactionsDetailsMenu();
+
+				Display.ShowWarning(warningMessage);
+
+				Console.Write("Escolha operação a ser realizada indicando seu número: ");
+
+				option = Console.ReadLine();
+
+				switch (option)
+				{
+					case "1":
+						GetBankTransactionsByDateMenu(bankTransactions);
+						warningMessage = "";
+						break;
+					case "2":
+						GetBankTransactionsByClient(clients , bankTransactions);
+						warningMessage = "";
+						break;
+					case "0":
+						break;
+					default:
+						warningMessage = "Aviso: Opção inválida, favor inserir número de 0 a 2.";
+						break;
+				}
+			} while (option != "0");
+		}
+
+		private static void GetBankTransactionsByDateMenu(List<BankTransactionRecord> bankTransactions)
+		{
+			string tryAgain = " ";
+			string day, month, year, fullDate;
+			do
+			{
+				Display.ShowBankInterface("Buscar Transação Bancária Por Data");
+				Display.ShowWarningForWrongOption();
+
+				Console.Write("Digite o dia (1 - 31): ");
+				day = Console.ReadLine();
+				Console.Write("Digite o mês (1 - 12): ");
+				month = Console.ReadLine();
+				Console.Write("Digite o ano (20XX): ");
+				year = Console.ReadLine();		
+				
+				if (CheckDate(day, month, year))
+				{
+					day = String.Format("{0, 0:D2}", int.Parse(day));
+					month = String.Format("{0, 0:D2}", int.Parse(month));
+					GetBankTransactionsByDate(bankTransactions, $"{day}/{month}/{year}");
+				}
+								
+				else
+				{
+					Display.ShowWarning("Data Inválida!");
+					Console.Write("Inserir nova data? S - sim / Qualquer outra tecla - não: ");
+					tryAgain = Console.ReadLine();
+				}				
+			} while (tryAgain == "s" || tryAgain == "S");
+		}
+
+		private static bool CheckDate(string day, string month, string year )
+		{
+			string fullDate = day + month + year;
+			if (int.TryParse(fullDate, out int result) && 
+				int.Parse(day) <= 31 && int.Parse(day) >= 1 &&
+				int.Parse(month) <= 12 && int.Parse(month) >= 1 &&
+				int.Parse(year) <= DateTime.Now.Year && int.Parse(year) >= 2000)
+			{
+				return true;
+			}
+			else
+				return false;
+		}
+
+		private static void GetBankTransactionsByClient(List<Client> clients, List<BankTransactionRecord> bankTransactions)
+		{
+			string findClient = " ";
+			do
+			{
+				Display.ShowBankInterface("Buscar Transação Bancária Por Cliente");
+				Display.ShowWarningForWrongOption();
+				int clientIndex = GetIndexUser(clients);
+
+				if (clientIndex == -1)
+				{
+					Display.ShowWarning("Cliente Não Encontrado!");
+					Console.Write("Tentar encontrar cliente novamente? S - sim / Qualquer outra tecla - não: ");
+					findClient = Console.ReadLine();
+				}
+				else
+					GetClientBankTransactions(clients[clientIndex], bankTransactions);
+
+			} while (findClient == "s" || findClient == "S");				
+		}
 	}
 }

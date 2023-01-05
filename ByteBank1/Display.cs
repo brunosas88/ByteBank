@@ -125,5 +125,12 @@ namespace ByteBank1
 			Console.WriteLine("---");
 			Console.WriteLine();
 		}
+
+		internal static void ShowBankTransactionsDetailsMenu()
+		{
+			Console.WriteLine("1 - Buscar por Data");
+			Console.WriteLine("2 - Buscar por Cliente");
+			Console.WriteLine("0 - Voltar ao Menu Principal");
+		}
 	}
 }
