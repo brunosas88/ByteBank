@@ -91,7 +91,7 @@ namespace ByteBank1
 			Console.WriteLine($"Cliente ID: {index}");
 			Console.WriteLine($"Nome: {client.Name}");
 			Console.WriteLine($"Conta: {client.AccountNumber}");
-			Console.WriteLine($"CPF: {client.Cpf}");
+			Console.WriteLine($"CPF: {client.MaskedCpf}");
 			Console.WriteLine($"Saldo: R$ {client.Balance:F2}");			
 			Console.WriteLine();
 		}
@@ -109,18 +109,18 @@ namespace ByteBank1
 			{				
 				Console.WriteLine($"Cliente: {bankTransactionRecord.OriginClient.Name}");
 				Console.WriteLine($"Conta: {bankTransactionRecord.OriginClient.AccountNumber}");
-				Console.WriteLine($"CPF: {bankTransactionRecord.OriginClient.Cpf}");
+				Console.WriteLine($"CPF: {bankTransactionRecord.OriginClient.MaskedCpf}");
 			}
 			
 			else
 			{				
 				Console.WriteLine($"Beneficiador: {bankTransactionRecord.OriginClient.Name}");
 				Console.WriteLine($"Conta: {bankTransactionRecord.OriginClient.AccountNumber}");
-				Console.WriteLine($"CPF: {bankTransactionRecord.OriginClient.Cpf}");
+				Console.WriteLine($"CPF: {bankTransactionRecord.OriginClient.MaskedCpf}");
 				Console.WriteLine("---");
 				Console.WriteLine($"Beneficiário: {bankTransactionRecord.DestinationClient.Name}");
 				Console.WriteLine($"Conta: {bankTransactionRecord.DestinationClient.AccountNumber}");
-				Console.WriteLine($"CPF: {bankTransactionRecord.DestinationClient.Cpf}");
+				Console.WriteLine($"CPF: {bankTransactionRecord.DestinationClient.MaskedCpf}");
 			}
 			Console.WriteLine("---");
 			Console.WriteLine();

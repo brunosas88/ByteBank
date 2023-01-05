@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Security.Cryptography;
+using System.Text.RegularExpressions;
 using System.Xml.Linq;
 using System.Xml.Schema;
 
@@ -35,8 +36,8 @@ namespace ByteBank1
                 switch (option)
                 {
                     case "1":
-                        CreateUser(clients);
-						Utils.WriteJSON(clients, bankTransactions);
+                        if (RegisterClient(clients))
+							Utils.WriteJSON(clients, bankTransactions);
 						warningMessage = "";
 						break;
                     case "2":
@@ -79,29 +80,35 @@ namespace ByteBank1
             } while (option != "0");
         }
 
-		public static void CreateUser(List<Client> clients)
+		public static bool RegisterClient(List<Client> clients)
 		{
 			string name, cpf, password, warning;
-			bool isRegistered;
+			bool isRegistered = true, cpfIsValid, registerIsValid = false;
 			Display.ShowBankInterface("Cadastro de Novo Cliente");
 			Display.ShowWarningForWrongOption();
 
 			Console.Write("Insira nome do novo cliente: ");
 			name = Console.ReadLine();
-			Console.Write("Insira cpf do novo cliente: ");
+			Console.Write("Insira cpf do novo cliente (somente números): ");
 			cpf = Console.ReadLine();
 			Console.Write("Insira senha do novo cliente: ");
 			password = Utils.EncryptPassword();
 
-			isRegistered = clients.Exists(client => client.Cpf == cpf);
+			Regex cpfRegex = new Regex(@"(^([0-9]){3}([0-9]){3}([0-9]){3}([0-9]){2}$)", RegexOptions.IgnoreCase);
+
+			cpfIsValid = cpfRegex.IsMatch(cpf);
+			if (cpfIsValid)
+				isRegistered = clients.Exists(client => client.Cpf == cpf);
 
 			if (!string.IsNullOrEmpty(name) && !isRegistered && !string.IsNullOrEmpty(password))
 			{
-				clients.Add(new Client(name, cpf, password));
+				clients.Add(new Client(name.ToUpper(), cpf, password));
+				registerIsValid = true;
 				Display.PrintClientInfo(clients[clients.Count - 1], clients.Count - 1);
 				warning = "Cliente Cadastrado com Sucesso!";
+
 			}
-			else if (string.IsNullOrEmpty(name) || string.IsNullOrEmpty(password))
+			else if (string.IsNullOrEmpty(name) || string.IsNullOrEmpty(password) || !cpfIsValid)
 				warning = "Entrada Inválida! Operação Não Realizada!";
 			else
 				warning = "Cliente já Cadastrado! Operação Não Realizada!";
@@ -109,6 +116,8 @@ namespace ByteBank1
 			Display.ShowWarning(warning);
 
 			Display.BackToMenu();
+
+			return registerIsValid;
 		}
 
 		static void DeleteUser(List<Client> clients)
