@@ -32,7 +32,6 @@ namespace ByteBank1
 
 			using (StreamWriter outputFile = new StreamWriter(filePath))
 				outputFile.WriteLine(jsonStringBankTransactions);
-
 		}
 
 		public static void ReadJSON(ref List<Client> clients, ref List<BankTransactionRecord> bankTransactions)
@@ -61,8 +60,7 @@ namespace ByteBank1
 		}
 
 		public static void WriteBankTransactionRecordFile(BankTransactionRecord record)
-		{
-			
+		{			
 			string directoryPath = @$"{Constants.AppDirectoryPath}\Records\{ChangeDateComposition(record.Date)}";
 
 			if (!Directory.Exists(directoryPath))
@@ -106,6 +104,32 @@ namespace ByteBank1
 		public static string ChangeDateComposition (DateTime date)
 		{
 			return date.ToShortDateString().Replace('/', '-');
+		}
+
+		public static string EncryptPassword()
+		{
+			string password = "";
+			ConsoleKey dataEntry;
+
+			do
+			{
+				ConsoleKeyInfo dataEntryKeyInfoFormat = Console.ReadKey(intercept: true);
+				dataEntry = dataEntryKeyInfoFormat.Key;
+
+				if (dataEntry == ConsoleKey.Backspace && password.Length > 0)
+				{
+					Console.Write("\b \b");
+					password = password[0..^1];
+				}
+				else if (!char.IsControl(dataEntryKeyInfoFormat.KeyChar))
+				{
+					Console.Write("*");
+					password += dataEntryKeyInfoFormat.KeyChar;
+				}
+			} while (dataEntry != ConsoleKey.Enter);
+
+			Console.WriteLine();
+			return password;
 		}
 	}
 }

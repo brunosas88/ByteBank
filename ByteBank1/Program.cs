@@ -36,10 +36,12 @@ namespace ByteBank1
                 {
                     case "1":
                         CreateUser(clients);
+						Utils.WriteJSON(clients, bankTransactions);
 						warningMessage = "";
 						break;
                     case "2":
                         DeleteUser(clients);
+						Utils.WriteJSON(clients, bankTransactions);
 						warningMessage = "";
 						break;
                     case "3":
@@ -89,7 +91,7 @@ namespace ByteBank1
 			Console.Write("Insira cpf do novo cliente: ");
 			cpf = Console.ReadLine();
 			Console.Write("Insira senha do novo cliente: ");
-			password = Console.ReadLine();
+			password = Utils.EncryptPassword();
 
 			isRegistered = clients.Exists(client => client.Cpf == cpf);
 
@@ -187,7 +189,7 @@ namespace ByteBank1
 			if (clientIndex >= 0 && clientIndex < clients.Count)
 			{
 				Console.Write("\nFavor inserir a senha: ");
-				string password = Console.ReadLine();
+				string password = Utils.EncryptPassword();
 
 				if (clients[clientIndex].Password == password)
 					PerformBankTransactions(clientIndex, clients, bankTransactions);
@@ -317,10 +319,12 @@ namespace ByteBank1
 			{
 				Display.ShowWarning("Operação Realizada com Sucesso!\n");
 
-				Client? destinationClient = indexClientToTransfer != -1 ? clients[indexClientToTransfer] : null;
+				Client? clientToTransfer = indexClientToTransfer != -1 ? clients[indexClientToTransfer] : null;
 
-				RegisterBankTransaction(bankTransactions, operationValue, value, clients[indexLoggedClient], destinationClient);
-					
+				RegisterBankTransaction(bankTransactions, operationValue, value, clients[indexLoggedClient], clientToTransfer);
+
+				Utils.WriteJSON(clients, bankTransactions);
+
 				Console.Write("Verificar detalhes da conta? S - sim / Qualquer outra tecla - não: ");
 
 				getClientDetails = Console.ReadLine();
