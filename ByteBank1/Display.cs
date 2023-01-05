@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -9,7 +10,7 @@ namespace ByteBank1
 	public class Display
 	{
 
-		public static string alignMessage(string message, int blankSpace)
+		public static string alignMessage(string message, int blankSpace = 82)
 		{
 			return String.Format($"{{0,-{blankSpace}}}", String.Format("{0," + ((blankSpace + message.Length) / 2).ToString() + "}", message));
 		}
@@ -47,6 +48,8 @@ namespace ByteBank1
 			Console.WriteLine("4 - Detalhes de um cliente");
 			Console.WriteLine("5 - Valor total armazenado no banco");
 			Console.WriteLine("6 - Realizar transações bancárias");
+			Console.WriteLine("7 - Listar todas as transações bancárias");
+			Console.WriteLine("8 - Detalhes de transações bancárias");
 			Console.WriteLine("0 - Sair do programa");
 		}
 
@@ -55,8 +58,8 @@ namespace ByteBank1
 			Console.WriteLine("1 - Depositar");
 			Console.WriteLine("2 - Sacar");
 			Console.WriteLine("3 - Transferir");
-			Console.WriteLine("0 - Voltar ao Menu Principal");
-			Console.WriteLine();
+			Console.WriteLine("4 - Histórico de Transações Bancárias");
+			Console.WriteLine("0 - Voltar ao Menu Principal");			
 		}
 
 		public static void ShowWarning(string message)
@@ -82,20 +85,52 @@ namespace ByteBank1
 			Console.ReadLine();
 		}
 
-		public static void PrintClientInfo(List<Client> clients, int index)
+		public static void PrintClientInfo(Client client, int index)
 		{
-			Console.WriteLine();
-			Console.BackgroundColor = ConsoleColor.DarkGreen;
-			Console.WriteLine($"Cliente ID: {index}".PadRight(30, ' '));
-			Console.WriteLine($"Nome: {clients[index].Name}".PadRight(30, ' '));
-			Console.WriteLine($"Conta: {clients[index].AccountNumber}".PadRight(30, ' '));
-			Console.WriteLine($"CPF: {clients[index].Cpf}".PadRight(30, ' '));
-			Console.WriteLine($"Saldo: R$ {clients[index].Balance:F2}".PadRight(30, ' '));
-			Console.BackgroundColor = ConsoleColor.DarkBlue;
+			Console.WriteLine();			
+			Console.WriteLine($"Cliente ID: {index}");
+			Console.WriteLine($"Nome: {client.Name}");
+			Console.WriteLine($"Conta: {client.AccountNumber}");
+			Console.WriteLine($"CPF: {client.Cpf}");
+			Console.WriteLine($"Saldo: R$ {client.Balance:F2}");			
 			Console.WriteLine();
 		}
 
+		internal static void PrintBankTransactionsInfo(BankTransactionRecord bankTransactionRecord)
+		{
+			Console.WriteLine();
+			Console.WriteLine($"Id: {bankTransactionRecord.Id}");
+			Console.WriteLine($"Operação: {bankTransactionRecord.OperationType}");
+			Console.WriteLine($"Data: {bankTransactionRecord.Date}");
+			Console.WriteLine($"Valor: R$ {bankTransactionRecord.Value:F2}");
+			Console.WriteLine("---");
 
+			if (bankTransactionRecord.DestinationClient == null)
+			{				
+				Console.WriteLine($"Cliente: {bankTransactionRecord.OriginClient.Name}");
+				Console.WriteLine($"Conta: {bankTransactionRecord.OriginClient.AccountNumber}");
+				Console.WriteLine($"CPF: {bankTransactionRecord.OriginClient.Cpf}");
+			}
+			
+			else
+			{				
+				Console.WriteLine($"Beneficiador: {bankTransactionRecord.OriginClient.Name}");
+				Console.WriteLine($"Conta: {bankTransactionRecord.OriginClient.AccountNumber}");
+				Console.WriteLine($"CPF: {bankTransactionRecord.OriginClient.Cpf}");
+				Console.WriteLine("---");
+				Console.WriteLine($"Beneficiário: {bankTransactionRecord.DestinationClient.Name}");
+				Console.WriteLine($"Conta: {bankTransactionRecord.DestinationClient.AccountNumber}");
+				Console.WriteLine($"CPF: {bankTransactionRecord.DestinationClient.Cpf}");
+			}
+			Console.WriteLine("---");
+			Console.WriteLine();
+		}
 
+		internal static void ShowBankTransactionsDetailsMenu()
+		{
+			Console.WriteLine("1 - Buscar por Data");
+			Console.WriteLine("2 - Buscar por Cliente");
+			Console.WriteLine("0 - Voltar ao Menu Principal");
+		}
 	}
 }
