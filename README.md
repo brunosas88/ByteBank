@@ -24,3 +24,4 @@ e utilização de laços de repetição e condição para confirmação de escol
     6 - Adicionada persistência de dados sobre os clientes cadastrados;
     7 - Adicionada persistência de dados e geração de arquivo de texto com detalhes sobre transações realizadas (depósitos, saques, 
     transferências); 
+    8 - Adicionada validação de CPF e proteção para visualização da senha;
