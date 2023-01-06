@@ -1,4 +1,7 @@
-﻿using Microsoft.VisualBasic;
+﻿using ByteBank1.Model;
+using ByteBank1.Util;
+using ByteBank1.View;
+using Microsoft.VisualBasic;
 using System;
 using System.Collections.Generic;
 using System.Reflection;
@@ -9,7 +12,7 @@ using System.Xml.Schema;
 
 namespace ByteBank1
 {
- 
+
     public class Program
     {       
         public static void Main(string[] args)
