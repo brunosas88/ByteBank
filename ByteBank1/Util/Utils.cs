@@ -89,12 +89,12 @@ namespace ByteBank1.Util
             }
             else
             {
-                file.WriteLine(Display.alignMessage("DESTINO"));
+                file.WriteLine(Display.alignMessage("BENEFICIARIO"));
                 file.WriteLine(Display.alignMessage($"CONTA: {record.DestinationClient.AccountNumber}"));
                 file.WriteLine(Display.alignMessage($"NOME: {record.DestinationClient.Name}"));
                 file.WriteLine(Display.alignMessage($"CPF: {record.DestinationClient.MaskedCpf}"));
                 file.WriteLine(Display.alignMessage(new string('-', 82)));
-                file.WriteLine(Display.alignMessage("ORIGEM"));
+                file.WriteLine(Display.alignMessage("BENEFICIADOR"));
                 file.WriteLine(Display.alignMessage($"CONTA: {record.OriginClient.AccountNumber}"));
                 file.WriteLine(Display.alignMessage($"NOME: {record.OriginClient.Name}"));
                 file.WriteLine(Display.alignMessage($"CPF: {record.OriginClient.MaskedCpf}"));
