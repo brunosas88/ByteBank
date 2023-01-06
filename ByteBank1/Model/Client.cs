@@ -10,53 +10,53 @@ namespace ByteBank1.Model
 {
     public class Client
     {
-        private string name;
-        private string cpf;
-        private string password;
-        private decimal balance;
-        private string accountNumber;
+        private string _name;
+        private string _cpf;
+        private string _password;
+        private decimal _balance;
+        private string _accountNumber;
 
         [JsonConstructor]
         public Client(string name, string cpf, string password, decimal balance, string accountNumber) : this(name, cpf, password)
         {
-            this.balance = balance;
-            this.accountNumber = accountNumber;
+            _balance = balance;
+            _accountNumber = accountNumber;
         }
 
         public Client(string name, string cpf, string password)
         {
-            this.name = name;
-            this.cpf = cpf;
-            this.password = password;
+            _name = name;
+            _cpf = cpf;
+            _password = password;
             int randomNumber = RandomNumberGenerator.GetInt32(99999999);
-            accountNumber = string.Format("{0, 0:D8}", randomNumber);
-            balance = 0;
+            _accountNumber = string.Format("{0, 0:D8}", randomNumber);
+            _balance = 0;
         }
 
         public bool SetBalance(decimal addition)
         {
-            decimal newBalance = balance + addition;
+            decimal newBalance = _balance + addition;
 
             if (newBalance >= 0)
             {
-                balance = newBalance;
+                _balance = newBalance;
                 return true;
             }
             else
                 return false;
         }
 
-        public string Name { get => name; }
+        public string Name { get => _name; }
 
-        public string Cpf { get => cpf; }
+        public string Cpf { get => _cpf; }
 
-        public string Password { get => password; }
+        public string Password { get => _password; }
 
-        public decimal Balance { get => balance; }
+        public decimal Balance { get => _balance; }
 
-        public string AccountNumber { get => accountNumber; }
+        public string AccountNumber { get => _accountNumber; }
 
-        public string MaskedCpf { get => Convert.ToUInt64(cpf).ToString(@"000\.000\.000\-00"); }
+        public string MaskedCpf { get => Convert.ToUInt64(_cpf).ToString(@"000\.000\.000\-00"); }
 
     }
 }

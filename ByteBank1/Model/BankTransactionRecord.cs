@@ -9,41 +9,41 @@ namespace ByteBank1.Model
 {
     public class BankTransactionRecord
     {
-        private string id;
-        private string operationType;
-        private DateTime date;
-        private decimal value;
-        private Client originClient;
-        private Client? destinationClient;
+        private string _id;
+        private string _operationType;
+        private DateTime _date;
+        private decimal _value;
+        private Client _originClient;
+        private Client? _destinationClient;
 
         [JsonConstructor]
         public BankTransactionRecord(string id, string operationType, DateTime date, decimal value, Client originClient, Client? destinationClient)
         {
-            this.id = id;
-            this.operationType = operationType;
-            this.date = date;
-            this.value = value;
-            this.originClient = originClient;
-            this.destinationClient = destinationClient;
+            _id = id;
+            _operationType = operationType;
+            _date = date;
+            _value = value;
+            _originClient = originClient;
+            _destinationClient = destinationClient;
         }
 
         public BankTransactionRecord(string operationType, decimal value, Client originClient, Client? destinationClient)
         {
-            id = Guid.NewGuid().ToString();
-            this.operationType = operationType;
-            date = DateTime.Now;
-            this.value = value;
-            this.originClient = originClient;
-            this.destinationClient = destinationClient;
+            _id = Guid.NewGuid().ToString();
+            _operationType = operationType;
+            _date = DateTime.Now;
+            _value = value;
+            _originClient = originClient;
+            _destinationClient = destinationClient;
         }
 
-        public string Id { get => id; }
-        public string OperationType { get => operationType; }
-        public DateTime Date { get => date; }
-        public decimal Value { get => value; }
-        public Client OriginClient { get => originClient; }
+        public string Id { get => _id; }
+        public string OperationType { get => _operationType; }
+        public DateTime Date { get => _date; }
+        public decimal Value { get => _value; }
+        public Client OriginClient { get => _originClient; }
 
-        public Client? DestinationClient { get => destinationClient; }
+        public Client? DestinationClient { get => _destinationClient; }
 
     }
 }

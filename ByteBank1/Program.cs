@@ -144,7 +144,7 @@ namespace ByteBank1
 
 		static int GetIndexUser(List<Client> clients)
 		{
-			Console.Write("Informe CPF do cliente requisitado: ");
+			Console.Write("Informe CPF do cliente requisitado (somente números): ");
 			string userInformation = Console.ReadLine();
 
 			int index = clients.FindIndex(client => client.Cpf == userInformation);
