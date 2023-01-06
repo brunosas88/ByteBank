@@ -1,4 +1,4 @@
-# byte-bank
+# ByteBank
 Projeto que simula o menu de operações de uma instituição bancária.
 
 ## Recursos Implementados
